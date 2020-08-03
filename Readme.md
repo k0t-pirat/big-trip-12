@@ -1,8 +1,5 @@
 # Личный проект «Большое путешествие» [![Build status][travis-image]][travis-url]
 
-* Студент: [Мария Никитина](https://up.htmlacademy.ru/ecmascript/12/user/1316825).
-* Наставник: [Олег Глущенко](https://htmlacademy.ru/profile/id305355).
-
 ---
 
 _Не удаляйте и не изменяйте папки и файлы:_
