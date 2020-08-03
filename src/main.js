@@ -6,8 +6,6 @@ import {createTripRouteTemplate} from '../src/view/trip-route';
 import {createPointEditTemplate} from '../src/view/point-edit';
 import {createPointItemTemplate} from '../src/view/point-item';
 
-console.log(123)
-
 const POINTS_AMOUNT = 3;
 const AFTERBEGIN = `afterbegin`;
 const BEFOREEND = `beforeend`;
