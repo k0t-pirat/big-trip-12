@@ -5,8 +5,8 @@ import {createSortTemplate} from '../src/view/sort';
 import {createTripRouteTemplate} from '../src/view/trip-route';
 import {createPointEditTemplate} from '../src/view/point-edit';
 import {createPointItemTemplate} from '../src/view/point-item';
+import {points} from './mock/point';
 
-const POINTS_AMOUNT = 3;
 const AFTERBEGIN = `afterbegin`;
 const BEFOREEND = `beforeend`;
 
@@ -30,8 +30,12 @@ renderTemplate(tripRouteContainer, createTripRouteTemplate(), BEFOREEND);
 
 const tripEventsContainer = tripRouteContainer.querySelector(`.trip-events__list`);
 
-renderTemplate(tripEventsContainer, createPointEditTemplate(), BEFOREEND);
+renderTemplate(tripEventsContainer, createPointEditTemplate(points[0]), BEFOREEND);
 
-for (let i = 0; i < POINTS_AMOUNT; i++) {
-  renderTemplate(tripEventsContainer, createPointItemTemplate(), BEFOREEND);
-}
+points.forEach((point) => {
+  renderTemplate(tripEventsContainer, createPointItemTemplate(point), BEFOREEND);
+});
+
+// for (let i = 0; i < POINTS_AMOUNT; i++) {
+//   renderTemplate(tripEventsContainer, createPointItemTemplate(point), BEFOREEND);
+// }
