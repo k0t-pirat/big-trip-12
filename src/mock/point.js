@@ -58,31 +58,7 @@ const destination = {
   images: [`http://picsum.photos/248/152?r=${Math.random()}`, `http://picsum.photos/248/152?r=${Math.random()}`]
 };
 
-// const startDate = new Date(2019, 2, 18, 12, 35);
-// const endDate = new Date(2019, 2, 18, 13, 35);
-
 let nextStartTime = new Date();
-
-// const point = {
-//   iconType: `taxi.png`,
-//   type: `Taxi to`,
-//   city: `Amsterdam`,
-//   startTime: startDate,
-//   endTime: endDate,
-//   destination,
-//   duration: `30M`,
-//   price: 20,
-//   offers: (
-//     `<h4 class="visually-hidden">Offers:</h4>
-//     <ul class="event__selected-offers">
-//       <li class="event__offer">
-//         <span class="event__offer-title">Order Uber</span>
-//         &plus;
-//         &euro;&nbsp;<span class="event__offer-price">20</span>
-//       </li>
-//     </ul>`
-//   )
-// };
 
 const getRandomBool = () => {
   return Boolean(Math.round(Math.random()));
@@ -100,9 +76,9 @@ const getRandomDate = (fromTime) => {
   const minuteFactor = MILLISECONDS * SECONDS_IN_MINUTE;
   const hourFactor = MILLISECONDS * SECONDS_IN_MINUTE * MINUTES_IN_HOUR;
   const dayFactor = MILLISECONDS * SECONDS_IN_MINUTE * MINUTES_IN_HOUR * HOURS_IN_DAY;
-  const hoursDifference = getRandomBool() ? getRandomInteger(0, 24) * hourFactor : 0;
-  const daysDifference = fromTime ? getRandomInteger(0, 3) * dayFactor : getRandomInteger(0, 36) * hourFactor;
-  const additionalDifference = getRandomBool() ? hoursDifference + daysDifference : getRandomInteger(0, 2) * hourFactor;
+  const daysDifference = fromTime ? getRandomInteger(0, 2) * dayFactor : getRandomInteger(0, 36) * hourFactor;
+  const hoursDifference = getRandomBool() ? getRandomInteger(0, 16) * hourFactor : 0;
+  const additionalDifference = getRandomBool() ? hoursDifference + daysDifference : 0;
 
   const currentTimestamp = fromTime ? fromTime.getTime() : (new Date()).getTime();
   const randomTimestamp = currentTimestamp + getRandomInteger(0, 59) * minuteFactor + additionalDifference;
