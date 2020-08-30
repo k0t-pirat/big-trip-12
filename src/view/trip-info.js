@@ -1,4 +1,8 @@
-const createTripInfoTemplate = () => {
+const createTripInfoTemplate = (points) => {
+  const fullCost = points.map((point) => {
+    return point.price + 20;
+  }).reduce((firstPrice, secondPrice) => firstPrice + secondPrice);
+
   return (
     `<section class="trip-main__trip-info  trip-info">
       <div class="trip-info__main">
@@ -8,7 +12,7 @@ const createTripInfoTemplate = () => {
       </div>
 
       <p class="trip-info__cost">
-        Total: &euro;&nbsp;<span class="trip-info__cost-value">1230</span>
+        Total: &euro;&nbsp;<span class="trip-info__cost-value">${fullCost}</span>
       </p>
     </section>`
   );

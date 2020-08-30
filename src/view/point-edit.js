@@ -1,45 +1,8 @@
 import {OFFERS, TRIP_POINTS, PLACE_POINTS} from '../mock/point';
+import {capitalizeWord, addArticle, getTimeParts} from '../utils/utils';
 
-const capitalizeWord = (word) => {
-  const letters = word.split(``);
-  letters[0] = letters[0].toUpperCase();
-
-  return letters.join(``);
-};
-
-const addLeadingZero = (value) => {
-  return value < 10 ? `0${String(value)}` : String(value);
-};
-
-const addArticle = (type) => {
-  let article = ``;
-
-  switch (type) {
-    case `taxi`:
-    case `bus`:
-    case `train`:
-    case `ship`:
-    case `transport`:
-    case `drive`:
-    case `flight`:
-      article = `To`;
-      break;
-    case `check-in`:
-    case `sightseeing`:
-    case `restaurant`:
-      article = `In`;
-      break;
-  }
-
-  return `${capitalizeWord(type)} ${article}`;
-};
-
-const formatDate = (date) => {
-  const day = addLeadingZero(date.getDate());
-  const month = addLeadingZero(date.getMonth() + 1);
-  const year = date.getFullYear().toString().substr(-2);
-  const hours = addLeadingZero(date.getHours());
-  const minutes = addLeadingZero(date.getMinutes());
+const formatDate = (time) => {
+  const {year, month, day, hours, minutes} = getTimeParts(time);
 
   return `${day}/${month}/${year} ${hours}:${minutes}`;
 };

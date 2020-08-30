@@ -44,7 +44,7 @@ const pointsByDates = dividePointsByDate(points);
 
 const tripMainElement = document.querySelector(`.trip-main`);
 
-renderTemplate(tripMainElement, createTripInfoTemplate(), AFTERBEGIN);
+renderTemplate(tripMainElement, createTripInfoTemplate(points), AFTERBEGIN);
 
 const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
 

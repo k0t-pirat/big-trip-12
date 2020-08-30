@@ -65,18 +65,32 @@ const getRandomBool = () => {
 };
 
 const getRandomInteger = (min, max) => {
-  return Math.floor(Math.random() * (max - min)) + min;
+  return Math.floor(Math.random() * (max + 1 - min)) + min;
 };
 
 const getRandomArrayElement = (array) => {
   return array[getRandomInteger(0, array.length - 1)];
 };
 
+const getRandomArrayElements = (array) => {
+  const allElements = [...array];
+  const selectedElements = [];
+  const maxElements = getRandomInteger(0, array.length);
+
+  for (let i = 0; i < maxElements; i++) {
+    const randomIndex = getRandomInteger(0, array.length - i - 1);
+    selectedElements.push(allElements[randomIndex]);
+    allElements.splice(randomIndex, 1);
+  }
+
+  return selectedElements;
+};
+
 const getRandomDate = (fromTime) => {
   const minuteFactor = MILLISECONDS * SECONDS_IN_MINUTE;
   const hourFactor = MILLISECONDS * SECONDS_IN_MINUTE * MINUTES_IN_HOUR;
   const dayFactor = MILLISECONDS * SECONDS_IN_MINUTE * MINUTES_IN_HOUR * HOURS_IN_DAY;
-  const daysDifference = fromTime ? getRandomInteger(0, 2) * dayFactor : getRandomInteger(0, 36) * hourFactor;
+  const daysDifference = fromTime ? getRandomInteger(0, 2) * dayFactor : getRandomInteger(0, 24) * hourFactor;
   const hoursDifference = getRandomBool() ? getRandomInteger(0, 16) * hourFactor : 0;
   const additionalDifference = getRandomBool() ? hoursDifference + daysDifference : 0;
 
@@ -100,25 +114,17 @@ const getPointDates = () => {
 
 const generatePoint = () => {
   const {startTime, endTime} = getPointDates();
+  const pointTitle = getRandomArrayElement(POINT_TYPES).title;
 
   return {
-    iconType: `${getRandomArrayElement(POINT_TYPES).title}.png`,
-    type: getRandomArrayElement(POINT_TYPES).title,
+    iconType: `${pointTitle}.png`,
+    type: pointTitle,
     city: getRandomArrayElement(CITIES),
     startTime,
     endTime,
     destination,
     price: getRandomInteger(50, 500),
-    offers: (
-      `<h4 class="visually-hidden">Offers:</h4>
-      <ul class="event__selected-offers">
-        <li class="event__offer">
-          <span class="event__offer-title">Order Uber</span>
-          &plus;
-          &euro;&nbsp;<span class="event__offer-price">20</span>
-        </li>
-      </ul>`
-    )
+    offers: getRandomArrayElements(OFFERS),
   };
 };
 

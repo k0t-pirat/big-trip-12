@@ -1,65 +1,46 @@
-const MILLISECONDS = 1000;
-const SECONDS_IN_MINUTE = 60;
-const MINUTES_IN_HOUR = 60;
-const HOURS_IN_DAY = 24;
-
-const capitalizeWord = (word) => {
-  const letters = word.split(``);
-  letters[0] = letters[0].toUpperCase();
-
-  return letters.join(``);
-};
-
-const addArticle = (type) => {
-  let article = ``;
-
-  switch (type) {
-    case `taxi`:
-    case `bus`:
-    case `train`:
-    case `ship`:
-    case `transport`:
-    case `drive`:
-    case `flight`:
-      article = `To`;
-      break;
-    case `check-in`:
-    case `sightseeing`:
-    case `restaurant`:
-      article = `In`;
-      break;
-  }
-
-  return `${capitalizeWord(type)} ${article}`;
-};
-
-const addLeadingZero = (value) => {
-  return value < 10 ? `0${String(value)}` : String(value);
-};
+import {addArticle, getTimeParts} from '../utils/utils';
+import {MILLISECONDS, SECONDS_IN_MINUTE, MINUTES_IN_HOUR, HOURS_IN_DAY} from '../utils/const';
 
 const formatTime = (time) => {
-  const hours = addLeadingZero(time.getHours());
-  const minutes = addLeadingZero(time.getMinutes());
+  const {hours, minutes} = getTimeParts(time);
 
   return `${hours}:${minutes}`;
 };
 
 const formatFullTime = (time) => {
-  const day = addLeadingZero(time.getDate());
-  const month = addLeadingZero(time.getMonth() + 1);
-  const year = time.getFullYear();
-  const hours = addLeadingZero(time.getHours());
-  const minutes = addLeadingZero(time.getMinutes());
+  const {fullYear, month, day, hours, minutes} = getTimeParts(time);
 
-  return `${year}-${month}-${day}T${hours}:${minutes}`;
+  return `${fullYear}-${month}-${day}T${hours}:${minutes}`;
+};
+
+const getDurationText = (durationRawMinutes) => {
+  const durationDays = Math.floor(durationRawMinutes / (MINUTES_IN_HOUR * HOURS_IN_DAY));
+  const durationHours = Math.floor((durationRawMinutes - durationDays * (MINUTES_IN_HOUR * HOURS_IN_DAY)) / MINUTES_IN_HOUR);
+  const durationMinutes = durationRawMinutes - (durationDays * (MINUTES_IN_HOUR * HOURS_IN_DAY) + durationHours * MINUTES_IN_HOUR);
+
+  const text = (durationDays ? `${durationDays}D ` : ``) + (durationHours ? `${durationHours}H ` : ``) + `${durationMinutes}M`;
+  return text;
 };
 
 const getDuration = (startTime, endTime) => {
   const startTimestamp = startTime.getTime();
   const endTimestamp = endTime.getTime();
   const durationMinutes = (endTimestamp - startTimestamp) / (MILLISECONDS * SECONDS_IN_MINUTE);
+  const durationText = getDurationText(durationMinutes);
 
-  return `${durationMinutes}M`;
+  return durationText;
+};
+
+const getOffersMarkup = (offers) => {
+  return offers.map((offer) => {
+    return (
+      `<li class="event__offer">
+          <span class="event__offer-title">${offer.title}</span>
+          &plus;
+          &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
+        </li>`
+    );
+  }).join(``);
 };
 
 const createPointItemTemplate = (point) => {
@@ -85,7 +66,10 @@ const createPointItemTemplate = (point) => {
         &euro;&nbsp;<span class="event__price-value">${price}</span>
       </p>
 
-      ${offers}
+      <h4 class="visually-hidden">Offers:</h4>
+      <ul class="event__selected-offers">
+        ${getOffersMarkup(offers)}
+      </ul>
 
       <button class="event__rollup-btn" type="button">
         <span class="visually-hidden">Open event</span>

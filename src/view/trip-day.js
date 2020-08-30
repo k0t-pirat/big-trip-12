@@ -1,19 +1,4 @@
-import { points } from "../mock/point";
-
-const MONTHS = [
-  `JAN`,
-  `FEB`,
-  `MAR`,
-  `APR`,
-  `MAY`,
-  `JUN`,
-  `JUL`,
-  `AUG`,
-  `SEP`,
-  `OCT`,
-  `NOV`,
-  `DEC`,
-];
+import {MONTHS} from '../utils/const';
 
 const createTripDayTemplate = (pointsByDate, index) => {
   const {date, month} = pointsByDate;
