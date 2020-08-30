@@ -52,11 +52,12 @@ const OFFERS = [
   {title: `train`, fullTitle: `Travel by train`, price: 40},
 ];
 
-const destination = {
-  name: `Chamonix`,
-  description: `Geneva is a city in Switzerland that lies at the southern tip of expansive Lac Léman (Lake Geneva).`,
-  images: [`http://picsum.photos/248/152?r=${Math.random()}`, `http://picsum.photos/248/152?r=${Math.random()}`]
-};
+const DESTINATION_TEXT = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. 
+  Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. 
+  Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. 
+  Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. 
+  Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`
+;
 
 let nextStartTime = new Date();
 
@@ -72,10 +73,10 @@ const getRandomArrayElement = (array) => {
   return array[getRandomInteger(0, array.length - 1)];
 };
 
-const getRandomArrayElements = (array) => {
+const getRandomArrayElements = (array, min, max) => {
   const allElements = [...array];
   const selectedElements = [];
-  const maxElements = getRandomInteger(0, array.length);
+  const maxElements = getRandomInteger(min || 0, max || array.length);
 
   for (let i = 0; i < maxElements; i++) {
     const randomIndex = getRandomInteger(0, array.length - i - 1);
@@ -84,6 +85,13 @@ const getRandomArrayElements = (array) => {
   }
 
   return selectedElements;
+};
+
+const getRandomSentences = (text) => {
+  const allSentences = text.split(`.`).map((sentence) => sentence.trim()).filter((sentence) => Boolean(sentence));
+  const randomSentences = getRandomArrayElements(allSentences, 1, 5);
+
+  return `${randomSentences.join(`. `)}.`;
 };
 
 const getRandomDate = (fromTime) => {
@@ -122,7 +130,10 @@ const generatePoint = () => {
     city: getRandomArrayElement(CITIES),
     startTime,
     endTime,
-    destination,
+    destination: {
+      description: getRandomSentences(DESTINATION_TEXT),
+      images: [`http://picsum.photos/248/152?r=${Math.random()}`, `http://picsum.photos/248/152?r=${Math.random()}`]
+    },
     price: getRandomInteger(50, 500),
     offers: getRandomArrayElements(OFFERS),
   };

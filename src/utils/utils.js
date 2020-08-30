@@ -29,7 +29,7 @@ const addArticle = (type) => {
 };
 
 const addLeadingZero = (value) => {
-  return value < 10 ? `0${String(value)}` : String(value);
+  return value < 10 ? Number(`0${String(value)}`) : value;
 };
 
 const getTimeParts = (time) => {
