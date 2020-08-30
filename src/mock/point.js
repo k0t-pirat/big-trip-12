@@ -94,6 +94,16 @@ const getRandomSentences = (text) => {
   return `${randomSentences.join(`. `)}.`;
 };
 
+const getRandomImages = () => {
+  const images = [];
+
+  for (let i = 0; i < getRandomInteger(0, 7); i++) {
+    images.push(`http://picsum.photos/248/152?r=${Math.random()}`);
+  }
+
+  return images;
+};
+
 const getRandomDate = (fromTime) => {
   const minuteFactor = MILLISECONDS * SECONDS_IN_MINUTE;
   const hourFactor = MILLISECONDS * SECONDS_IN_MINUTE * MINUTES_IN_HOUR;
@@ -132,7 +142,7 @@ const generatePoint = () => {
     endTime,
     destination: {
       description: getRandomSentences(DESTINATION_TEXT),
-      images: [`http://picsum.photos/248/152?r=${Math.random()}`, `http://picsum.photos/248/152?r=${Math.random()}`]
+      images: getRandomImages(),
     },
     price: getRandomInteger(50, 500),
     offers: getRandomArrayElements(OFFERS),
