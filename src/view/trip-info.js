@@ -19,8 +19,13 @@ const getMiddleCity = (points) => {
 const createTripInfoTemplate = (points) => {
   const fullCost = points.map((point) => {
     return point.price + 20;
-  }).reduce((firstPrice, secondPrice) => firstPrice + secondPrice);
+  }).reduce((firstPrice, secondPrice) => firstPrice + secondPrice, 0);
   const firstPoint = points[0];
+
+  if (!firstPoint) {
+    return `<span></span>`;
+  }
+
   const lastPoint = points[points.length - 1];
   const {month: firstMonth, day: firstDay} = getTimeParts(firstPoint.startTime);
   const {month: lastMonth, day: lastDay} = getTimeParts(lastPoint.endTime);
@@ -29,7 +34,7 @@ const createTripInfoTemplate = (points) => {
   return (
     `<section class="trip-main__trip-info  trip-info">
       <div class="trip-info__main">
-        <h1 class="trip-info__title">${firstPoint.city} &mdash; ${middleCity} &mdash; ${lastPoint.city}</h1>
+        <h1 class="trip-info__title">${firstPoint ? firstPoint.city : ``} &mdash; ${middleCity} &mdash; ${lastPoint ? lastPoint.city : ``}</h1>
 
         <p class="trip-info__dates">${MONTHS[firstMonth]} ${firstDay}&nbsp;&mdash;&nbsp;${lastMonth === firstMonth ? `` : MONTHS[lastMonth]} ${lastDay}</p>
       </div>

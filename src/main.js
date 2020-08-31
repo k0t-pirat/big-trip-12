@@ -5,6 +5,7 @@ import SortView from '../src/view/sort';
 import TripRouteView from '../src/view/trip-route';
 import PointEditView from '../src/view/point-edit';
 import PointItemView from '../src/view/point-item';
+import NoPointsView from '../src/view/no-points';
 import {points} from './mock/point';
 import {render} from './utils/render';
 
@@ -49,45 +50,51 @@ render(tripControlsElement, new FilterView().getElement(), BEFOREEND);
 
 const tripRouteContainer = document.querySelector(`.trip-events`);
 
-render(tripRouteContainer, new SortView().getElement(), BEFOREEND);
-render(tripRouteContainer, new TripRouteView(pointsByDates).getElement(), BEFOREEND);
+if (points.length === 0) {
+  render(tripRouteContainer, new NoPointsView().getElement(), BEFOREEND);
+} else {
+  render(tripRouteContainer, new SortView().getElement(), BEFOREEND);
+  render(tripRouteContainer, new TripRouteView(pointsByDates).getElement(), BEFOREEND);
 
-pointsByDates.forEach((pointsByDate, index) => {
-  const tripEventsContainer = tripRouteContainer.querySelectorAll(`.trip-days__item`)[index].querySelector(`.trip-events__list`);
-  const renderedPoints = pointsByDate.points;
+  pointsByDates.forEach((pointsByDate, index) => {
+    const tripEventsContainer = tripRouteContainer.querySelectorAll(`.trip-days__item`)[index].querySelector(`.trip-events__list`);
+    const renderedPoints = pointsByDate.points;
 
-  renderedPoints.forEach((point) => {
-    const pointItemComponent = new PointItemView(point);
-    const pointEditComponent = new PointEditView(point);
+    renderedPoints.forEach((point) => {
+      const pointItemComponent = new PointItemView(point);
+      const pointEditComponent = new PointEditView(point);
 
-    const replaceItemToEdit = () => {
-      tripEventsContainer.replaceChild(pointEditComponent.getElement(), pointItemComponent.getElement());
-    };
+      const replaceItemToEdit = () => {
+        tripEventsContainer.replaceChild(pointEditComponent.getElement(), pointItemComponent.getElement());
+      };
 
-    const replaceEditToItem = () => {
-      tripEventsContainer.replaceChild(pointItemComponent.getElement(), pointEditComponent.getElement());
-    };
+      const replaceEditToItem = () => {
+        tripEventsContainer.replaceChild(pointItemComponent.getElement(), pointEditComponent.getElement());
+      };
 
-    const onEscKeyDown = (evt) => {
-      if (evt.key === `Escape` || evt.key === `Esc`) {
+      const onEscKeyDown = (evt) => {
+        if (evt.key === `Escape` || evt.key === `Esc`) {
+          evt.preventDefault();
+          replaceEditToItem();
+          document.removeEventListener(`keydown`, onEscKeyDown);
+        }
+      };
+
+      pointItemComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, (evt) => {
+        evt.preventDefault();
+        replaceItemToEdit();
+        document.addEventListener(`keydown`, onEscKeyDown);
+      });
+
+      pointEditComponent.getElement().addEventListener(`submit`, (evt) => {
         evt.preventDefault();
         replaceEditToItem();
         document.removeEventListener(`keydown`, onEscKeyDown);
-      }
-    };
+      });
 
-    pointItemComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, (evt) => {
-      evt.preventDefault();
-      replaceItemToEdit();
-      document.addEventListener(`keydown`, onEscKeyDown);
+      render(tripEventsContainer, pointItemComponent.getElement(), BEFOREEND);
     });
-
-    pointEditComponent.getElement().addEventListener(`submit`, (evt) => {
-      evt.preventDefault();
-      replaceEditToItem();
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    });
-
-    render(tripEventsContainer, pointItemComponent.getElement(), BEFOREEND);
   });
-});
+}
+
+
