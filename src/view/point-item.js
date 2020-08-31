@@ -1,5 +1,6 @@
 import {addArticle, getTimeParts} from '../utils/utils';
 import {MILLISECONDS, SECONDS_IN_MINUTE, MINUTES_IN_HOUR, HOURS_IN_DAY} from '../utils/const';
+import {createElement} from '../utils/render';
 
 const formatTime = (time) => {
   const {hours, minutes} = getTimeParts(time);
@@ -78,4 +79,27 @@ const createPointItemTemplate = (point) => {
   );
 };
 
-export {createPointItemTemplate};
+class PointItemView {
+  constructor(point) {
+    this._element = null;
+    this._point = point;
+  }
+
+  getTemplate() {
+    return createPointItemTemplate(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export default PointItemView;

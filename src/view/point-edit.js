@@ -1,5 +1,6 @@
 import {OFFERS, TRIP_POINTS, PLACE_POINTS} from '../mock/point';
 import {capitalizeWord, addArticle, getTimeParts} from '../utils/utils';
+import {createElement} from '../utils/render';
 
 const formatDate = (time) => {
   const {year, month, day, hours, minutes} = getTimeParts(time);
@@ -147,4 +148,27 @@ const createPointEditTemplate = (point) => {
   );
 };
 
-export {createPointEditTemplate};
+class PointEditView {
+  constructor(point) {
+    this._element = null;
+    this._point = point;
+  }
+
+  getTemplate() {
+    return createPointEditTemplate(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export default PointEditView;

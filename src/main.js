@@ -1,19 +1,15 @@
-import {createTripInfoTemplate} from '../src/view/trip-info';
-import {createTripDayTemplate} from '../src/view/trip-day';
-import {createTabsTemplate} from '../src/view/tabs';
-import {createFilterTemplate} from '../src/view/filter';
-import {createSortTemplate} from '../src/view/sort';
-import {createTripRouteTemplate} from '../src/view/trip-route';
-import {createPointEditTemplate} from '../src/view/point-edit';
-import {createPointItemTemplate} from '../src/view/point-item';
+import TripInfoView from '../src/view/trip-info';
+import TabsView from '../src/view/tabs';
+import FilterView from '../src/view/filter';
+import SortView from '../src/view/sort';
+import TripRouteView from '../src/view/trip-route';
+import PointEditView from '../src/view/point-edit';
+import PointItemView from '../src/view/point-item';
 import {points} from './mock/point';
+import {render} from './utils/render';
 
 const AFTERBEGIN = `afterbegin`;
 const BEFOREEND = `beforeend`;
-
-const renderTemplate = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
-};
 
 const dividePointsByDate = (rawPoints) => {
   const dividedPoints = [];
@@ -44,31 +40,27 @@ const pointsByDates = dividePointsByDate(points);
 
 const tripMainElement = document.querySelector(`.trip-main`);
 
-renderTemplate(tripMainElement, createTripInfoTemplate(points), AFTERBEGIN);
+render(tripMainElement, new TripInfoView(points).getElement(), AFTERBEGIN);
 
 const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
 
-renderTemplate(tripControlsElement, createTabsTemplate(), BEFOREEND);
-renderTemplate(tripControlsElement, createFilterTemplate(), BEFOREEND);
+render(tripControlsElement, new TabsView().getElement(), BEFOREEND);
+render(tripControlsElement, new FilterView().getElement(), BEFOREEND);
 
 const tripRouteContainer = document.querySelector(`.trip-events`);
 
-renderTemplate(tripRouteContainer, createSortTemplate(), BEFOREEND);
-renderTemplate(tripRouteContainer, createTripRouteTemplate(), BEFOREEND);
-
-const tripDaysContainer = tripRouteContainer.querySelector(`.trip-days`);
+render(tripRouteContainer, new SortView().getElement(), BEFOREEND);
+render(tripRouteContainer, new TripRouteView(pointsByDates).getElement(), BEFOREEND);
 
 pointsByDates.forEach((pointsByDate, index) => {
-  renderTemplate(tripDaysContainer, createTripDayTemplate(pointsByDate, index), BEFOREEND);
-
   const tripEventsContainer = tripRouteContainer.querySelectorAll(`.trip-days__item`)[index].querySelector(`.trip-events__list`);
   const renderedPoints = pointsByDate.points;
 
   if (index === 0) {
-    renderTemplate(tripEventsContainer, createPointEditTemplate(renderedPoints[0]), BEFOREEND);
+    render(tripEventsContainer, new PointEditView(renderedPoints[0]).getElement(), BEFOREEND);
   }
 
   renderedPoints.forEach((point) => {
-    renderTemplate(tripEventsContainer, createPointItemTemplate(point), BEFOREEND);
+    render(tripEventsContainer, new PointItemView(point).getElement(), BEFOREEND);
   });
 });

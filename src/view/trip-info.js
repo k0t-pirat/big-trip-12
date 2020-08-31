@@ -1,5 +1,6 @@
 import {getTimeParts} from '../utils/utils';
 import {MONTHS} from '../utils/const';
+import { createElement } from '../utils/render';
 
 const getMiddleCity = (points) => {
   let middleCity = ``;
@@ -40,4 +41,27 @@ const createTripInfoTemplate = (points) => {
   );
 };
 
-export {createTripInfoTemplate};
+class TripInfoView {
+  constructor(points) {
+    this._element = null;
+    this._points = points;
+  }
+
+  getTemplate() {
+    return createTripInfoTemplate(this._points);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export default TripInfoView;
