@@ -1,6 +1,6 @@
 import {getTimeParts} from '../utils/utils';
 import {MONTHS} from '../utils/const';
-import { createElement } from '../utils/render';
+import {createElement} from '../utils/render';
 
 const getMiddleCity = (points) => {
   let middleCity = ``;
