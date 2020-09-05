@@ -68,4 +68,28 @@ const dividePointsByDates = (rawPoints) => {
   return dividedPoints;
 };
 
-export {capitalizeWord, addArticle, addLeadingZero, getTimeParts, dividePointsByDates};
+const sortPointsByPrice = (points) => {
+  const sortedPoints = points.sort((pointA, pointB) => {
+    return pointB.price - pointA.price;
+  });
+
+  return [{
+    date: null,
+    month: null,
+    points: sortedPoints,
+  }];
+};
+
+const sortPointsByTime = (points) => {
+  const sortedPoints = points.sort((pointA, pointB) => {
+    return (pointB.endTime - pointB.startTime) - (pointA.endTime - pointA.startTime);
+  });
+
+  return [{
+    date: null,
+    month: null,
+    points: sortedPoints,
+  }];
+};
+
+export {capitalizeWord, addArticle, addLeadingZero, getTimeParts, dividePointsByDates, sortPointsByPrice, sortPointsByTime};

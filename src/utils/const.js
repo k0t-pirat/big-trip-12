@@ -22,4 +22,10 @@ const RenderPosition = {
   BEFOREEND: `beforeend`,
 };
 
-export {MILLISECONDS, SECONDS_IN_MINUTE, MINUTES_IN_HOUR, HOURS_IN_DAY, MONTHS, RenderPosition};
+const SortTypes = {
+  EVENT: `event`,
+  TIME: `time`,
+  PRICE: `price`,
+};
+
+export {MILLISECONDS, SECONDS_IN_MINUTE, MINUTES_IN_HOUR, HOURS_IN_DAY, MONTHS, RenderPosition, SortTypes};

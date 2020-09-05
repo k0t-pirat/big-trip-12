@@ -1,7 +1,7 @@
 const MILLISECONDS = 1000;
 const SECONDS_IN_MINUTE = 60;
 const MINUTES_IN_HOUR = 60;
-const HOURS_IN_DAY = 24;
+// const HOURS_IN_DAY = 24;
 const POINT_AMOUNT = 25;
 
 const CITIES = [
@@ -107,10 +107,10 @@ const getRandomImages = () => {
 const getRandomDate = (fromTime) => {
   const minuteFactor = MILLISECONDS * SECONDS_IN_MINUTE;
   const hourFactor = MILLISECONDS * SECONDS_IN_MINUTE * MINUTES_IN_HOUR;
-  const dayFactor = MILLISECONDS * SECONDS_IN_MINUTE * MINUTES_IN_HOUR * HOURS_IN_DAY;
-  const daysDifference = fromTime ? getRandomInteger(0, 2) * dayFactor : getRandomInteger(0, 24) * hourFactor;
+  // const dayFactor = MILLISECONDS * SECONDS_IN_MINUTE * MINUTES_IN_HOUR * HOURS_IN_DAY;
+  // const daysDifference = fromTime ? getRandomInteger(0, 2) * dayFactor : getRandomInteger(0, 24) * hourFactor;
   const hoursDifference = getRandomBool() ? getRandomInteger(0, 16) * hourFactor : 0;
-  const additionalDifference = getRandomBool() ? hoursDifference + daysDifference : 0;
+  const additionalDifference = getRandomBool() ? hoursDifference : 0;
 
   const currentTimestamp = fromTime ? fromTime.getTime() : (new Date()).getTime();
   const randomTimestamp = currentTimestamp + getRandomInteger(0, 59) * minuteFactor + additionalDifference;
