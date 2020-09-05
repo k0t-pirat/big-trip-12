@@ -31,11 +31,19 @@ const createTripRouteTemplate = (pointsByDates) => {
 class TripRouteView extends AbstractView {
   constructor(pointsByDates) {
     super();
+    this._tripDaysElements = null;
     this._pointsByDates = pointsByDates;
   }
 
   getTemplate() {
     return createTripRouteTemplate(this._pointsByDates);
+  }
+
+  getTripPointsContainerByIndex(index) {
+    if (!this._tripDaysElements) {
+      this._tripDaysElements = this.getElement().querySelectorAll(`.trip-days__item`);
+    }
+    return this._tripDaysElements[index].querySelector(`.trip-events__list`);
   }
 }
 

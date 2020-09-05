@@ -157,6 +157,13 @@ class PointEditView extends AbstractView {
   getTemplate() {
     return createPointEditTemplate(this._point);
   }
+
+  setFormSubmitHandler(callback) {
+    this.getElement().addEventListener(`submit`, (evt) => {
+      evt.preventDefault();
+      callback();
+    });
+  }
 }
 
 export default PointEditView;

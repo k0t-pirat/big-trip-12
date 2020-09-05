@@ -17,4 +17,9 @@ const MONTHS = [
   `DEC`,
 ];
 
-export {MILLISECONDS, SECONDS_IN_MINUTE, MINUTES_IN_HOUR, HOURS_IN_DAY, MONTHS};
+const RenderPosition = {
+  AFTERBEGIN: `afterbegin`,
+  BEFOREEND: `beforeend`,
+};
+
+export {MILLISECONDS, SECONDS_IN_MINUTE, MINUTES_IN_HOUR, HOURS_IN_DAY, MONTHS, RenderPosition};

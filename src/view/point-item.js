@@ -88,6 +88,13 @@ class PointItemView extends AbstractView {
   getTemplate() {
     return createPointItemTemplate(this._point);
   }
+
+  setPointEditButtonClickHandler(callback) {
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+      callback();
+    });
+  }
 }
 
 export default PointItemView;
