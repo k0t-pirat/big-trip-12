@@ -40,6 +40,7 @@ class TripPresenter {
 
       this._tripRouteComponent = new TripRouteView(this._renderedPoints);
       this._renderPoints();
+      this._sortComponent.setMarkupBySortType(sortType);
     });
   }
 

@@ -1,4 +1,5 @@
 import AbstractView from "./abstract";
+import {SortTypes} from '../utils/const';
 
 const createSortTemplate = () => {
   return (
@@ -50,6 +51,10 @@ class SortView extends AbstractView {
         callback(sortType);
       }
     });
+  }
+
+  setMarkupBySortType(sortType) {
+    this.getElement().querySelector(`.trip-sort__item`).textContent = sortType === SortTypes.EVENT ? `Day` : ``;
   }
 }
 
