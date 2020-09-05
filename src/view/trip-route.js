@@ -1,5 +1,5 @@
 import {MONTHS} from '../utils/const';
-import {createElement} from '../utils/render';
+import AbstractView from './abstract';
 
 const getTripDaysMarkup = (pointsByDates) => {
   return pointsByDates.map((pointsByDate, index) => {
@@ -28,26 +28,14 @@ const createTripRouteTemplate = (pointsByDates) => {
   );
 };
 
-class TripRouteView {
+class TripRouteView extends AbstractView {
   constructor(pointsByDates) {
-    this._element = null;
+    super();
     this._pointsByDates = pointsByDates;
   }
 
   getTemplate() {
     return createTripRouteTemplate(this._pointsByDates);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 

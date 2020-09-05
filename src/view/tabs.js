@@ -1,4 +1,4 @@
-import {createElement} from "../utils/render";
+import AbstractView from "./abstract";
 
 const createTabsTemplate = () => {
   return (
@@ -9,25 +9,9 @@ const createTabsTemplate = () => {
   );
 };
 
-class TabsView {
-  constructor() {
-    this._element = null;
-  }
-
+class TabsView extends AbstractView {
   getTemplate() {
     return createTabsTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 
