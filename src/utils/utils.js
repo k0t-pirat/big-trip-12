@@ -92,4 +92,19 @@ const sortPointsByTime = (points) => {
   }];
 };
 
-export {capitalizeWord, addArticle, addLeadingZero, getTimeParts, dividePointsByDates, sortPointsByPrice, sortPointsByTime};
+const updateItems = (items, changedItem) => {
+  const index = items.findIndex((item) => {
+    return item.id === changedItem.id;
+  });
+
+  if (index === -1) {
+    return items;
+  }
+
+  const updatedItems = items.slice();
+
+  updatedItems.splice(index, 1, changedItem);
+  return updatedItems;
+};
+
+export {capitalizeWord, addArticle, addLeadingZero, getTimeParts, dividePointsByDates, sortPointsByPrice, sortPointsByTime, updateItems};

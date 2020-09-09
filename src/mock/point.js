@@ -130,11 +130,12 @@ const getPointDates = () => {
   };
 };
 
-const generatePoint = () => {
+const generatePoint = (index) => {
   const {startTime, endTime} = getPointDates();
   const pointTitle = getRandomArrayElement(POINT_TYPES).title;
 
   return {
+    id: index + 1,
     iconType: `${pointTitle}.png`,
     type: pointTitle,
     city: getRandomArrayElement(CITIES),
@@ -154,7 +155,7 @@ const generatePoints = () => {
   let points = [];
 
   for (let i = 0; i < POINT_AMOUNT; i++) {
-    points.push(generatePoint());
+    points.push(generatePoint(i));
   }
 
   return points;

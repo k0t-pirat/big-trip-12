@@ -4,17 +4,20 @@ import TripRouteView from '../view/trip-route';
 import NoPointsView from '../view/no-points';
 import {render, replace} from '../utils/render';
 import {RenderPosition, SortTypes} from '../utils/const';
-import {dividePointsByDates, sortPointsByPrice, sortPointsByTime} from '../utils/utils';
+import {dividePointsByDates, sortPointsByPrice, sortPointsByTime, updateItems} from '../utils/utils';
 
 class TripPresenter {
   constructor(tripRouteContainer) {
     this._tripRouteContainer = tripRouteContainer;
     this._tripPointsContainer = null;
+    this._tripRouteComponent = null;
     this._rawPoints = [];
     this._renderedPoints = [];
-    this._tripRouteComponent = null;
+    this._pointPresentersCase = {};
     this._noPointsComponent = new NoPointsView();
     this._sortComponent = new SortView();
+
+    this.updateData = this.updateData.bind(this);
   }
 
   init(points) {
@@ -28,6 +31,11 @@ class TripPresenter {
       this._renderSort();
       this._renderPoints();
     }
+  }
+
+  updateData(changedPoint) {
+    this._rawPoints = updateItems(this._rawPoints, changedPoint);
+    this._pointPresentersCase[changedPoint.id].update();
   }
 
   _renderSort() {
@@ -59,8 +67,9 @@ class TripPresenter {
   }
 
   _renderPoint(point) {
-    const pointPresenter = new PointPresenter(this._tripPointsContainer);
+    const pointPresenter = new PointPresenter(this._tripPointsContainer, this.updateData);
     pointPresenter.init(point);
+    this._pointPresentersCase[point.id] = pointPresenter;
   }
 
   _clearPoints() {
