@@ -8,6 +8,10 @@ const formatDate = (time) => {
   return `${day}/${month}/${year} ${hours}:${minutes}`;
 };
 
+const getFavoriteStatusMarkup = (isFavorite) => {
+  return isFavorite ? `checked` : ``;
+};
+
 const getPhotosMarkup = (imageLinks) => {
   return imageLinks.map((link) => {
     return (
@@ -62,7 +66,7 @@ const getAvailableOffersMarkup = () => {
 };
 
 const createPointEditTemplate = (point) => {
-  const {iconType, type, city, price, startTime, endTime, destination} = point;
+  const {iconType, type, city, price, startTime, endTime, destination, isFavorite} = point;
 
   return (
     `<form class="event  event--edit" action="#" method="post">
@@ -114,7 +118,7 @@ const createPointEditTemplate = (point) => {
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
         <button class="event__reset-btn" type="reset">Delete</button>
 
-        <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" checked>
+        <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${getFavoriteStatusMarkup(isFavorite)}>
         <label class="event__favorite-btn" for="event-favorite-1">
           <span class="visually-hidden">Add to favorite</span>
           <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
@@ -161,6 +165,12 @@ class PointEditView extends AbstractView {
   setFormSubmitHandler(callback) {
     this.getElement().addEventListener(`submit`, (evt) => {
       evt.preventDefault();
+      callback();
+    });
+  }
+
+  setFavoriteClickHandler(callback) {
+    this.getElement().querySelector(`.event__favorite-checkbox`).addEventListener(`change`, () => {
       callback();
     });
   }

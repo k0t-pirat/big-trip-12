@@ -146,6 +146,7 @@ const generatePoint = () => {
     },
     price: getRandomInteger(50, 500),
     offers: getRandomArrayElements(OFFERS),
+    isFavorite: getRandomBool(),
   };
 };
 
