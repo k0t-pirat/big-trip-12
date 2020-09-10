@@ -2,7 +2,7 @@ import PointPresenter from './point';
 import SortView from '../view/sort';
 import TripRouteView from '../view/trip-route';
 import NoPointsView from '../view/no-points';
-import {render, replace} from '../utils/render';
+import {render, replace, remove} from '../utils/render';
 import {RenderPosition, SortTypes} from '../utils/const';
 import {dividePointsByDates, sortPointsByPrice, sortPointsByTime, updateItems} from '../utils/utils';
 
@@ -73,7 +73,12 @@ class TripPresenter {
   }
 
   _clearPoints() {
-    this._tripRouteComponent.getElement().remove();
+    Object.values(this._pointPresentersCase).forEach((pointPresenter) => {
+      pointPresenter.destroy();
+    });
+    this._pointPresentersCase = {};
+
+    remove(this._tripRouteComponent);
   }
 
   _changeSortType(sortType) {

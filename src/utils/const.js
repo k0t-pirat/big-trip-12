@@ -28,4 +28,15 @@ const SortTypes = {
   PRICE: `price`,
 };
 
-export {MILLISECONDS, SECONDS_IN_MINUTE, MINUTES_IN_HOUR, HOURS_IN_DAY, MONTHS, RenderPosition, SortTypes};
+const CITIES = [
+  `Amsterdam`,
+  `Moscow`,
+  `Paris`,
+  `Beijing`,
+  `Seoul`,
+  `Anatananarivu`,
+  `Toronto`,
+  `Chamonix`,
+];
+
+export {MILLISECONDS, SECONDS_IN_MINUTE, MINUTES_IN_HOUR, HOURS_IN_DAY, MONTHS, RenderPosition, SortTypes, CITIES};

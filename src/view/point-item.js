@@ -33,7 +33,7 @@ const getDuration = (startTime, endTime) => {
 };
 
 const getOffersMarkup = (offers) => {
-  return offers.map((offer) => {
+  return offers.slice(0, 3).map((offer) => {
     return (
       `<li class="event__offer">
           <span class="event__offer-title">${offer.title}</span>
@@ -45,7 +45,8 @@ const getOffersMarkup = (offers) => {
 };
 
 const createPointItemTemplate = (point) => {
-  const {iconType, type, city, startTime, endTime, price, offers} = point;
+  const {iconType, type, destination, startTime, endTime, price, offers} = point;
+  const {city} = destination;
 
   return (
     `<div class="event">

@@ -1,6 +1,10 @@
-import {OFFERS, TRIP_POINTS, PLACE_POINTS} from '../mock/point';
+import {OFFERS, TRIP_POINTS, PLACE_POINTS, CITIES, destinations, getOffersByPointType} from '../mock/point';
 import {capitalizeWord, addArticle, getTimeParts} from '../utils/utils';
-import AbstractView from './abstract';
+import SmartView from './smart';
+
+const availableCities = destinations.map((destination) => {
+  return destination.city;
+});
 
 const formatDate = (time) => {
   const {year, month, day, hours, minutes} = getTimeParts(time);
@@ -12,6 +16,18 @@ const getFavoriteStatusMarkup = (isFavorite) => {
   return isFavorite ? `checked` : ``;
 };
 
+const getPointTypeStatusMarkup = (type, currentType) => {
+  return type === currentType ? `checked` : ``;
+};
+
+const getDatalistOptionsMarkup = (cities) => {
+  return cities.map((city) => {
+    return (
+      `<option value="${city}"></option>`
+    );
+  }).join(``);
+};
+
 const getPhotosMarkup = (imageLinks) => {
   return imageLinks.map((link) => {
     return (
@@ -20,36 +36,36 @@ const getPhotosMarkup = (imageLinks) => {
   }).join(``);
 };
 
-const getPointChecksMarkup = (points) => {
+const getPointChecksMarkup = (points, currentType) => {
   return (
-    points.map((title) => {
+    points.map((title, index) => {
       return (
         `<div class="event__type-item">
-          <input id="event-type-${title}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${title}">
-          <label class="event__type-label  event__type-label--${title}" for="event-type-${title}-1">${capitalizeWord(title)}</label>
+          <input id="event-type-${title}-${index}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${title}" ${getPointTypeStatusMarkup(title, currentType)}>
+          <label class="event__type-label  event__type-label--${title}" for="event-type-${title}-${index}">${capitalizeWord(title)}</label>
         </div>`
       );
     }).join(``)
   );
 };
 
-const getPointFieldsetMarkup = () => {
+const getPointFieldsetMarkup = (currentType) => {
   return (
     `<fieldset class="event__type-group">
         <legend class="visually-hidden">Transfer</legend>
-        ${getPointChecksMarkup(TRIP_POINTS)}
+        ${getPointChecksMarkup(TRIP_POINTS, currentType)}
       </fieldset>
       <fieldset class="event__type-group">
         <legend class="visually-hidden">Activity</legend>
-        ${getPointChecksMarkup(PLACE_POINTS)}
+        ${getPointChecksMarkup(PLACE_POINTS, currentType)}
       </fieldset>`
   );
 };
 
-const getAvailableOffersMarkup = () => {
+const getAvailableOffersMarkup = (offers) => {
   return (
     `<div class="event__available-offers">
-    ${OFFERS.map((offer) => {
+    ${offers.map((offer) => {
       return (
         `<div class="event__offer-selector">
           <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.title}-1" type="checkbox" name="event-offer-${offer.title}" checked>
@@ -66,7 +82,9 @@ const getAvailableOffersMarkup = () => {
 };
 
 const createPointEditTemplate = (point) => {
-  const {id: pointId, iconType, type, city, price, startTime, endTime, destination, isFavorite} = point;
+  const {id: pointId, type, price, startTime, endTime, destination, isFavorite, offers} = point;
+  const iconType = `${type}.png`;
+  const {city} = destination;
 
   return (
     `<form class="event  event--edit" action="#" method="post">
@@ -79,19 +97,17 @@ const createPointEditTemplate = (point) => {
           <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
           <div class="event__type-list">
-            ${getPointFieldsetMarkup()}
+            ${getPointFieldsetMarkup(type)}
           </div>
         </div>
 
         <div class="event__field-group  event__field-group--destination">
-          <label class="event__label  event__type-output" for="event-destination-1">
+          <label class="event__label  event__type-output" for="event-destination-${pointId}">
             ${addArticle(type)}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1">
-          <datalist id="destination-list-1">
-            <option value="Amsterdam"></option>
-            <option value="Geneva"></option>
-            <option value="Chamonix"></option>
+          <input class="event__input  event__input--destination" id="event-destination-${pointId}" type="text" name="event-destination" value="${city}" list="destination-list-${pointId}">
+          <datalist id="destination-list-${pointId}">
+            ${getDatalistOptionsMarkup(availableCities)}
           </datalist>
         </div>
 
@@ -134,7 +150,7 @@ const createPointEditTemplate = (point) => {
       <section class="event__details">
         <section class="event__section  event__section--offers">
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-          ${getAvailableOffersMarkup()}
+          ${getAvailableOffersMarkup(offers)}
         </section>
 
         <section class="event__section  event__section--destination">
@@ -152,10 +168,11 @@ const createPointEditTemplate = (point) => {
   );
 };
 
-class PointEditView extends AbstractView {
+class PointEditView extends SmartView {
   constructor(point) {
     super();
     this._point = point;
+    this._setInnerHandlers();
   }
 
   getTemplate() {
@@ -172,6 +189,49 @@ class PointEditView extends AbstractView {
   setFavoriteClickHandler(callback) {
     this.getElement().querySelector(`.event__favorite-checkbox`).addEventListener(`change`, () => {
       callback();
+    });
+  }
+
+  restoreHandlers() {
+
+  }
+
+  _setInnerHandlers() {
+    this.getElement().querySelector(`.event__type-list`).addEventListener(`change`, (evt) => {
+      const target = evt.target;
+      const typeCheckbox = target && target.closest(`.event__type-input`) ? target : null;
+
+      if (typeCheckbox) {
+        const type = typeCheckbox.value;
+        const offers = getOffersByPointType(type);
+
+        this.updateData({
+          type,
+          offers
+        });
+      }
+    });
+
+    this.getElement().querySelector(`.event__input--destination`).addEventListener(`input`, (evt) => {
+      const destinationInput = evt.currentTarget;
+
+      if (availableCities.includes(destinationInput.value)) {
+        const city = destinationInput.value;
+        const cityIndex = destinations.findIndex((destination) => {
+          return destination.city === city;
+        });
+        const destination = destinations[cityIndex];
+
+        this.updateData({
+          destination
+        });
+      }
+    });
+
+    this.getElement().querySelector(`.event__input--destination`).addEventListener(`click`, (evt) => {
+      const destinationInput = evt.currentTarget;
+
+      destinationInput.value = ``;
     });
   }
 }

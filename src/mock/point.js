@@ -1,3 +1,6 @@
+import {getRandomBool, getRandomInteger, getRandomArrayElement, getRandomArrayElements} from './utils';
+import {offersByPointTypes} from './offer';
+
 const MILLISECONDS = 1000;
 const SECONDS_IN_MINUTE = 60;
 const MINUTES_IN_HOUR = 60;
@@ -32,16 +35,16 @@ const PLACE_POINTS = [
 ];
 
 const POINT_TYPES = [
-  {title: `taxi`, subtype: `transfer`},
-  {title: `bus`, subtype: `transfer`},
-  {title: `train`, subtype: `transfer`},
-  {title: `ship`, subtype: `transfer`},
-  {title: `transport`, subtype: `transfer`},
-  {title: `drive`, subtype: `transfer`},
-  {title: `flight`, subtype: `transfer`},
-  {title: `check-in`, subtype: `activity`},
-  {title: `sightseeing`, subtype: `activity`},
-  {title: `restaurant`, subtype: `activity`},
+  `taxi`,
+  `bus`,
+  `train`,
+  `ship`,
+  `transport`,
+  `drive`,
+  `flight`,
+  `check-in`,
+  `sightseeing`,
+  `restaurant`,
 ];
 
 const OFFERS = [
@@ -60,32 +63,6 @@ const DESTINATION_TEXT = `Lorem ipsum dolor sit amet, consectetur adipiscing eli
 ;
 
 let nextStartTime = new Date();
-
-const getRandomBool = () => {
-  return Boolean(Math.round(Math.random()));
-};
-
-const getRandomInteger = (min, max) => {
-  return Math.floor(Math.random() * (max + 1 - min)) + min;
-};
-
-const getRandomArrayElement = (array) => {
-  return array[getRandomInteger(0, array.length - 1)];
-};
-
-const getRandomArrayElements = (array, min, max) => {
-  const allElements = [...array];
-  const selectedElements = [];
-  const maxElements = getRandomInteger(min || 0, max || array.length);
-
-  for (let i = 0; i < maxElements; i++) {
-    const randomIndex = getRandomInteger(0, array.length - i - 1);
-    selectedElements.push(allElements[randomIndex]);
-    allElements.splice(randomIndex, 1);
-  }
-
-  return selectedElements;
-};
 
 const getRandomSentences = (text) => {
   const allSentences = text.split(`.`).map((sentence) => sentence.trim()).filter((sentence) => Boolean(sentence));
@@ -130,23 +107,39 @@ const getPointDates = () => {
   };
 };
 
+const getOffersByPointType = (pointType) => {
+  const pointTypeIndex = offersByPointTypes.findIndex(({type}) => {
+    return type === pointType;
+  });
+
+  return offersByPointTypes[pointTypeIndex].offers  ;
+};
+
+const destinations = CITIES.map((city) => {
+  return {
+    city,
+    description: getRandomSentences(DESTINATION_TEXT),
+    images: getRandomImages(),
+  };
+});
+
 const generatePoint = (index) => {
   const {startTime, endTime} = getPointDates();
-  const pointTitle = getRandomArrayElement(POINT_TYPES).title;
+  const pointTitle = getRandomArrayElement(POINT_TYPES);
 
   return {
     id: index + 1,
     iconType: `${pointTitle}.png`,
     type: pointTitle,
-    city: getRandomArrayElement(CITIES),
+    destination: getRandomArrayElement(destinations),
     startTime,
     endTime,
-    destination: {
-      description: getRandomSentences(DESTINATION_TEXT),
-      images: getRandomImages(),
-    },
+    // destination: {
+    //   description: getRandomSentences(DESTINATION_TEXT),
+    //   images: getRandomImages(),
+    // },
     price: getRandomInteger(50, 500),
-    offers: getRandomArrayElements(OFFERS),
+    offers: getOffersByPointType(pointTitle),
     isFavorite: getRandomBool(),
   };
 };
@@ -163,4 +156,4 @@ const generatePoints = () => {
 
 const points = generatePoints();
 
-export {OFFERS, TRIP_POINTS, PLACE_POINTS, points};
+export {OFFERS, TRIP_POINTS, PLACE_POINTS, points, CITIES, destinations, getOffersByPointType};

@@ -41,4 +41,9 @@ const replace = (replaceToElement, replaceByElement) => {
   replaceByElement.parentNode.replaceChild(replaceToElement, replaceByElement);
 };
 
-export {createElement, render, renderTemplate, replace};
+const remove = (component) => {
+  component.getElement().remove();
+  component.removeElement();
+};
+
+export {createElement, render, renderTemplate, replace, remove};

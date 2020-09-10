@@ -1,6 +1,6 @@
 import PointEditView from '../view/point-edit';
 import PointItemView from '../view/point-item';
-import {render, replace} from '../utils/render';
+import {render, replace, remove} from '../utils/render';
 import {RenderPosition} from '../utils/const';
 
 const Mode = {
@@ -37,6 +37,14 @@ class PointPresenter {
     if (this._mode === Mode.EDITING) {
       replace(this._pointEditComponent, oldPointEditComponent);
     }
+
+    remove(oldPointItemComponent);
+    remove(oldPointEditComponent);
+  }
+
+  destroy() {
+    remove(this._pointItemComponent);
+    remove(this._pointEditComponent);
   }
 
   _setPoint() {
