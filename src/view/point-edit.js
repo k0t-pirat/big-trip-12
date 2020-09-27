@@ -171,7 +171,9 @@ const createPointEditTemplate = (point) => {
 class PointEditView extends SmartView {
   constructor(point) {
     super();
+    this._callbackKeeper = {};
     this._point = point;
+    this._oldPoint = Object.assign({}, point);
     this._setInnerHandlers();
   }
 
@@ -180,20 +182,36 @@ class PointEditView extends SmartView {
   }
 
   setFormSubmitHandler(callback) {
+    this._callbackKeeper.formSubmitCallback = callback;
+
     this.getElement().addEventListener(`submit`, (evt) => {
       evt.preventDefault();
-      callback();
+      this._callbackKeeper.formSubmitCallback();
     });
   }
 
   setFavoriteClickHandler(callback) {
+    this._callbackKeeper.favoriteClickCallback = callback;
+
     this.getElement().querySelector(`.event__favorite-checkbox`).addEventListener(`change`, () => {
-      callback();
+      this._callbackKeeper.favoriteClickCallback();
     });
   }
 
   restoreHandlers() {
+    this._setInnerHandlers();
+    this.setFormSubmitHandler(this._callbackKeeper.formSubmitCallback);
+    this.setFavoriteClickHandler(this._callbackKeeper.favoriteClickCallback);
+  }
 
+  resetPoint() {
+    const {type, offers, destination} = this._oldPoint;
+
+    this.updateData({
+      type,
+      offers,
+      destination
+    });
   }
 
   _setInnerHandlers() {

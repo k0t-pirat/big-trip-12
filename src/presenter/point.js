@@ -9,12 +9,14 @@ const Mode = {
 };
 
 class PointPresenter {
-  constructor(pointContainer, updateData) {
+  constructor(pointContainer, updateData, handleModeChange) {
     this._pointItemComponent = null;
     this._pointEditComponent = null;
     this._pointContainer = pointContainer;
     this.updateData = updateData;
+    this.handleModeChange = handleModeChange;
     this._mode = Mode.DEFAULT;
+    this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
   init(point) {
@@ -47,28 +49,43 @@ class PointPresenter {
     remove(this._pointEditComponent);
   }
 
+  resetView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this._replaceEditToItem();
+    }
+  }
+
+  _onEscKeyDown(evt) {
+    if (evt.key === `Escape` || evt.key === `Esc`) {
+      evt.preventDefault();
+      this._pointEditComponent.resetPoint();
+      this._replaceEditToItem();
+    }
+  }
+
+  _replaceItemToEdit() {
+    replace(this._pointEditComponent, this._pointItemComponent);
+    document.addEventListener(`keydown`, this._onEscKeyDown);
+    this.handleModeChange();
+    this._mode = Mode.EDITING;
+  }
+
+  _replaceEditToItem() {
+    replace(this._pointItemComponent, this._pointEditComponent);
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
+    this._mode = Mode.DEFAULT;
+  }
+
   _setPoint() {
     this._pointItemComponent = new PointItemView(this._point);
     this._pointEditComponent = new PointEditView(this._point);
 
-    const onEscKeyDown = (evt) => {
-      if (evt.key === `Escape` || evt.key === `Esc`) {
-        evt.preventDefault();
-        replace(this._pointItemComponent, this._pointEditComponent);
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      }
-    };
-
     this._pointItemComponent.setPointEditButtonClickHandler(() => {
-      replace(this._pointEditComponent, this._pointItemComponent);
-      document.addEventListener(`keydown`, onEscKeyDown);
-      this._mode = Mode.EDITING;
+      this._replaceItemToEdit();
     });
 
     this._pointEditComponent.setFormSubmitHandler(() => {
-      replace(this._pointItemComponent, this._pointEditComponent);
-      document.removeEventListener(`keydown`, onEscKeyDown);
-      this._mode = Mode.DEFAULT;
+      this._replaceEditToItem();
     });
 
     this._pointEditComponent.setFavoriteClickHandler(() => {

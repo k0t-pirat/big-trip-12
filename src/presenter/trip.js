@@ -18,6 +18,7 @@ class TripPresenter {
     this._sortComponent = new SortView();
 
     this.updateData = this.updateData.bind(this);
+    this.handleModeChange = this.handleModeChange.bind(this);
   }
 
   init(points) {
@@ -36,6 +37,12 @@ class TripPresenter {
   updateData(changedPoint) {
     this._rawPoints = updateItems(this._rawPoints, changedPoint);
     this._pointPresentersCase[changedPoint.id].update();
+  }
+
+  handleModeChange() {
+    Object.values(this._pointPresentersCase).forEach((pointPresenter) => {
+      pointPresenter.resetView();
+    });
   }
 
   _renderSort() {
@@ -67,7 +74,7 @@ class TripPresenter {
   }
 
   _renderPoint(point) {
-    const pointPresenter = new PointPresenter(this._tripPointsContainer, this.updateData);
+    const pointPresenter = new PointPresenter(this._tripPointsContainer, this.updateData, this.handleModeChange);
     pointPresenter.init(point);
     this._pointPresentersCase[point.id] = pointPresenter;
   }
