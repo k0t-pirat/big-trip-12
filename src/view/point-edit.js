@@ -216,12 +216,14 @@ class PointEditView extends SmartView {
   }
 
   resetPoint() {
-    const {type, offers, destination} = this._oldPoint;
+    const {type, offers, destination, startTime, endTime} = this._oldPoint;
 
     this.updateData({
       type,
       offers,
-      destination
+      destination,
+      startTime,
+      endTime
     });
   }
 

@@ -1,3 +1,4 @@
+import moment from "moment";
 import {addArticle, getTimeParts} from '../utils/utils';
 import {MILLISECONDS, SECONDS_IN_MINUTE, MINUTES_IN_HOUR, HOURS_IN_DAY} from '../utils/const';
 import AbstractView from './abstract';
@@ -14,22 +15,31 @@ const formatFullTime = (time) => {
   return `${fullYear}-${month}-${day}T${hours}:${minutes}`;
 };
 
-const getDurationText = (durationRawMinutes) => {
-  const durationDays = Math.floor(durationRawMinutes / (MINUTES_IN_HOUR * HOURS_IN_DAY));
-  const durationHours = Math.floor((durationRawMinutes - durationDays * (MINUTES_IN_HOUR * HOURS_IN_DAY)) / MINUTES_IN_HOUR);
-  const durationMinutes = durationRawMinutes - (durationDays * (MINUTES_IN_HOUR * HOURS_IN_DAY) + durationHours * MINUTES_IN_HOUR);
+// const getDurationText = (durationRawMinutes) => {
+//   const durationDays = Math.floor(durationRawMinutes / (MINUTES_IN_HOUR * HOURS_IN_DAY));
+//   const durationHours = Math.floor((durationRawMinutes - durationDays * (MINUTES_IN_HOUR * HOURS_IN_DAY)) / MINUTES_IN_HOUR);
+//   const durationMinutes = durationRawMinutes - (durationDays * (MINUTES_IN_HOUR * HOURS_IN_DAY) + durationHours * MINUTES_IN_HOUR);
 
-  const text = (durationDays ? `${durationDays}D ` : ``) + (durationHours ? `${durationHours}H ` : ``) + `${durationMinutes}M`;
-  return text;
-};
+//   const text = (durationDays ? `${durationDays}D ` : ``) + (durationHours ? `${durationHours}H ` : ``) + `${durationMinutes}M`;
+//   return text;
+// };
 
-const getDuration = (startTime, endTime) => {
-  const startTimestamp = startTime.getTime();
-  const endTimestamp = endTime.getTime();
-  const durationMinutes = (endTimestamp - startTimestamp) / (MILLISECONDS * SECONDS_IN_MINUTE);
-  const durationText = getDurationText(durationMinutes);
+// const getDuration = (startTime, endTime) => {
+//   const startTimestamp = startTime.getTime();
+//   const endTimestamp = endTime.getTime();
+//   const durationMinutes = (endTimestamp - startTimestamp) / (MILLISECONDS * SECONDS_IN_MINUTE);
+//   const durationText = getDurationText(durationMinutes);
 
-  return durationText;
+//   return durationText;
+// };
+
+const getTrueDuration = (startTime, endTime) => {
+  const duration = moment.duration(moment(endTime).diff(startTime));
+  const days = duration.days();
+  const hours = duration.hours();
+  const minutes = duration.minutes();
+
+  return (days ? `${days}D ` : ``) + (hours ? `${hours}H ` : ``) + `${minutes}M`;
 };
 
 const getOffersMarkup = (offers) => {
@@ -61,7 +71,7 @@ const createPointItemTemplate = (point) => {
           &mdash;
           <time class="event__end-time" datetime="${formatFullTime(endTime)}">${formatTime(endTime)}</time>
         </p>
-        <p class="event__duration">${getDuration(startTime, endTime)}</p>
+        <p class="event__duration">${getTrueDuration(startTime, endTime)}</p>
       </div>
 
       <p class="event__price">
