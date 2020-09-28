@@ -114,23 +114,23 @@ const createPointEditTemplate = (point) => {
         </div>
 
         <div class="event__field-group  event__field-group--time">
-          <label class="visually-hidden" for="event-start-time-1">
+          <label class="visually-hidden" for="event-start-time-${pointId}">
             From
           </label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatDate(startTime)}">
+          <input class="event__input  event__input--time" id="event-start-time-${pointId}" type="text" name="event-start-time" value="${formatDate(startTime)}">
           &mdash;
-          <label class="visually-hidden" for="event-end-time-1">
+          <label class="visually-hidden" for="event-end-time-${pointId}">
             To
           </label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatDate(endTime)}">
+          <input class="event__input  event__input--time" id="event-end-time-${pointId}" type="text" name="event-end-time" value="${formatDate(endTime)}">
         </div>
 
         <div class="event__field-group  event__field-group--price">
-          <label class="event__label" for="event-price-1">
+          <label class="event__label" for="event-price-${pointId}">
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
+          <input class="event__input  event__input--price" id="event-price-${pointId}" type="text" name="event-price" value="${price}">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -176,7 +176,15 @@ class PointEditView extends SmartView {
     this._callbackKeeper = {};
     this._point = point;
     this._oldPoint = Object.assign({}, point);
+    this._startDatepicker = null;
+    this._endDatepicker = null;
+    this._minDatePickerDate = this._point.startTime;
+    this._maxDatePickerDate = this._point.endTime;
     this._setInnerHandlers();
+    this._setDatepicker();
+
+    this._startDateChangeHandler = this._startDateChangeHandler.bind(this);
+    this._endDateChangeHandler = this._endDateChangeHandler.bind(this);
   }
 
   getTemplate() {
@@ -201,6 +209,7 @@ class PointEditView extends SmartView {
   }
 
   restoreHandlers() {
+    this._setDatepicker();
     this._setInnerHandlers();
     this.setFormSubmitHandler(this._callbackKeeper.formSubmitCallback);
     this.setFavoriteClickHandler(this._callbackKeeper.favoriteClickCallback);
@@ -252,6 +261,56 @@ class PointEditView extends SmartView {
       const destinationInput = evt.currentTarget;
 
       destinationInput.value = ``;
+    });
+  }
+
+  _setDatepicker() {
+    if (this._startDatepicker) {
+      this._startDatepicker.destroy();
+      this._startDatepicker = null;
+    }
+
+    if (this._endDatepicker) {
+      this._endDatepicker.destroy();
+      this._endDatepicker = null;
+    }
+
+    this._startDatepicker = flatpickr(
+      this.getElement().querySelector(`.event__input--time[name=event-start-time]`),
+      {
+        dateFormat: `d/m/y H:i`,
+        enableTime: true,
+        maxDate: this._maxDatePickerDate,
+        onChange: this._startDateChangeHandler.bind(this),
+      }
+    );
+
+    this._endDatepicker = flatpickr(
+      this.getElement().querySelector(`.event__input--time[name=event-end-time]`),
+      {
+        dateFormat: `d/m/y H:i`,
+        enableTime: true,
+        minDate: this._minDatePickerDate,
+        onChange: this._endDateChangeHandler.bind(this),
+      }
+    );
+  }
+
+  _startDateChangeHandler([startTime]) {
+    this._minDatePickerDate = startTime;
+    this._endDatepicker.set('minDate', startTime);
+
+    this.updateData({
+      startTime
+    });
+  }
+
+  _endDateChangeHandler([endTime]) {
+    this._maxDatePickerDate = endTime;
+    this._startDatepicker.set('maxDate', endTime);
+    
+    this.updateData({
+      endTime
     });
   }
 }
