@@ -1,3 +1,5 @@
+import flatpickr from "flatpickr";
+import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 import {OFFERS, TRIP_POINTS, PLACE_POINTS, CITIES, destinations, getOffersByPointType} from '../mock/point';
 import {capitalizeWord, addArticle, getTimeParts} from '../utils/utils';
 import SmartView from './smart';
